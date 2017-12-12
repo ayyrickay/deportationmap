@@ -35,17 +35,27 @@ sheets.getData(data => {
     //loop through records and output to the screen:
     console.log(data)
     let num = 1
+    const latlngArray = data.records.forEach(record => {
+      geocoder.geocode( { 'address': record.city + ', ' + record.state}, (results, status) => {
+        record.lat = results[0].geometry.location.lat()
+        record.lng = results[0].geometry.location.lng()
+        console.log(record)
+
+        const marker = new google.maps.Marker({
+          position: {lat: record.lat, lng: record.lng},
+          map: map,
+          title: `${record.city} , ${record.state}. Total Deported (October 2002 through June 2017) = ${record.departures}`,
+          optimized: false
+        })
+      })
+    })
+
+    // new google.maps.Marker({
+    //   position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()},
+    //   map: map,
+    //   title: record.city + ', ' + record.state  + '. Total Deported (October 2002 through June 2017) = ' + record.departures
+    //   })
     data.records.forEach(record => {
-        geocoder.geocode( { 'address': records.city + ', ' + records.state}, function(results, status) {
-
-// draw markers:
-          var eachMarkers = new google.maps.Marker({
-            position: {lat: results[0].geometry.location.lat(), lng: results[0].geometry.location.lng()},
-            map: map,
-            title: records.city + ', ' + records.state  + '. Total Deported (October 2002 through June 2017) = ' + records.departures 
-            })
-          })
-
         const tr = document.createElement('tr')
         let td = document.createElement('td')
         td.innerHTML = num
